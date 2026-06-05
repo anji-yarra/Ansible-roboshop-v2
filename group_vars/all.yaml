@@ -1,2 +1,11 @@
 ansible_user: ec2-user
 ansible_password: DevOps321
+MONGODB_HOST: mongodb.anjidevops.online
+REDIS_HOST: redis.anjidevops.online
+MYSQL_HOST: mysql.anjidevops.online 
+RABBITMQ_HOST: rabbitmq.anjidevops.online 
+CATALOGUE_HOST: catalogue.anjidevops.online
+USER_HOST: user.anjidevops.online
+CART_HOST: cart.anjidevops.online
+SHIPPING_HOST: shipping.anjidevops.online
+PAYMENT_HOST: payment.anjidevops.online

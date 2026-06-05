@@ -1,0 +1,66 @@
+- name: Configuration cart Server
+  hosts: cart
+  become: yes
+  tasks: 
+  - name: Enable nodejs 20
+    command: dnf module enable nodejs:20 -yes
+
+  - name: Install nodejs
+    package: 
+      name: nodejs
+      state: present
+
+  - name: Create system user
+    user: 
+      name: roboshop
+      system:true
+      home: /app
+      shell: /sbin/nologin
+      comment: "Roboshop System User"
+
+  - name: Delete /app directory
+    file:
+      path: /app
+      state: absent
+
+  - name: Delete cart.zip in /tmp
+    file:
+      path: /tmp/cart.zip
+      state: absent
+
+  - name: Create app directory
+    file:
+      path: /app
+      state: directory
+
+  - name: Download cart code
+    get_url:
+      url: https://roboshop-artifacts.s3.amazonaws.com/cart-v3.zip
+      dest: /tmp/cart.zip
+
+  - name: unzip cart
+    unarchaive:
+      src: /tmp/cart.zip
+      dest: /app
+
+  - name: Install Dependencies
+    community.general.npm:
+      path: /app
+
+  - name: copy cart service
+    template: 
+      src: cart.service.j2
+      dest: /etc/systemd/system/cart.service
+
+  - name: deamon reload
+    systemd_service:
+      name: cart
+      deamon_reload: true
+
+  - name: Enable and restart cart
+    serice:
+      name: cart
+      state: restarted
+      enabled: yes
+
+

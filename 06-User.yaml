@@ -1,0 +1,64 @@
+- name: Configure User Serverr
+  hosts: user
+  become: yes
+  tasks:
+  - name: enable nodejs 20
+    command: dnf module enable nodejs:20 -yes
+  - name: Install nodejs
+    package:
+      name: jodejs
+      state: present
+    
+  - name: create user
+    user:
+      name: roboshop
+      system: true
+      home: /app
+      shell: /sbin/nologin
+      comment: "Roboshop System user"
+  
+  - name: Delete /app directory
+    file:
+      path: /app
+      state: absent
+
+  - name: Delete user.zip in /tmp
+    file: 
+      path: /tmp/user.zip
+      state: absent
+
+  - name: create app directory
+    file:
+      path: /app
+      state: directory
+
+  - name: Download user code
+    get_url:
+      url: https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip
+      dest: /tmp/user.zip
+
+  - name: unzip user
+    unarchive:
+      src: /tmp/user.zip
+      dest: /app
+      remote_src: yes
+
+  - name: Install Dependencies
+    community.general.npm:
+      path: /app
+
+  - name: Copy user service
+    template: 
+      src: user.service.j2
+      dest: /etc/systemd/system/user/.service
+
+  - name: deamon reload
+    system_service:
+      name: user
+      deamon_relaod: true
+
+  - name: Enable and Restart User
+    service:
+      name: user
+      state: restarted
+      enabled: yes
