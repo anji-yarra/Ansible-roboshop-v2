@@ -9,6 +9,7 @@
 
     - name: Start and enabled service
       service:
+        name: mysqld
         state: started
         enabled: yes
         
