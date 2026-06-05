@@ -3,7 +3,7 @@
   become: yes
   tasks: 
   - name: Enable nodejs 20
-    command: dnf module enable nodejs:20 -yes
+    command: dnf module enable nodejs:20 -y
 
   - name: Install nodejs
     package: 
