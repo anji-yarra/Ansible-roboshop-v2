@@ -13,7 +13,7 @@
   - name: Create system user
     user: 
       name: roboshop
-      system:true
+      system: true
       home: /app
       shell: /sbin/nologin
       comment: "Roboshop System User"
